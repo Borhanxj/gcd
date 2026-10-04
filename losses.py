@@ -3,6 +3,8 @@ import torch.nn.functional as F
 
 def unsup_contrastive_loss(z, temperature=1.0):
     # given 2 augmented views of B images, z: [2B, D], compute the unsupervised contrastive loss
+    # parameter z is of shape [2B, D] where B is the batch size and D is the feature dimension. 
+    # The first B rows correspond to the first view and the next B rows correspond to the second view of the same images.
     z = F.normalize(z, dim=-1)
     n, B = z.shape[0], z.shape[0] // 2
 
