@@ -5,6 +5,7 @@ from matplotlib.patches import Rectangle
 from scipy.optimize import linear_sum_assignment
 from kmeans import kmeans
 from ss_kmeans import ss_kmeans
+import argparse
 
 CLASSES = ["airplane", "automobile", "bird", "cat", "deer",
            "dog", "frog", "horse", "ship", "truck"]
@@ -53,7 +54,12 @@ def plot(ax, w, match, num_old, anchored, title):
     ax.set_title(title)
 
 def main():
-    data = torch.load("features/cifar10_dino.pt")
+    p = argparse.ArgumentParser()
+    p.add_argument("--feats", default="features/cifar10_dino.pt")
+    p.add_argument("--out", default="confusion_cifar10.png")
+    args = p.parse_args()
+    data = torch.load(args.feats)
+
     feats, targets, lab = data["feats"].cuda(), data["targets"].cuda(), data["is_labelled"].cuda()
     k, num_old = data["num_classes"], data["num_old"]
 
@@ -72,7 +78,7 @@ def main():
         plot(ax, w, match, num_old, anchored, name)
 
     plt.tight_layout()
-    plt.savefig("confusion_cifar10.png", dpi=150)
+    plt.savefig(args.out, dpi=150)
     plt.show()
 
 if __name__ == "__main__":
